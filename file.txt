@@ -1,0 +1,4 @@
+Ciao! Questo e' un file di test per il nostro compressore di Huffman.
+Contiene lettere maiuscole, minuscole, numeri come 12345 e punteggiatura.
+Ripetiamo alcune lettere per il test: AAAA bbb CC dd.
+
