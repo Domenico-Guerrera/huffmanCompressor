@@ -4,18 +4,16 @@
 #include "huffman.h"
 #include "minheap.h"
 
-int countChar(const char* fileName, int frequencies[256]){
-    FILE* fp = fopen(fileName, "rb");
-    
-    if(fp != NULL){
+int countChar(FILE* input, int frequencies[MAX_TREE_HEIGHT]){
+    if(input != NULL){
         int ch;
-        while((ch = fgetc(fp)) != EOF)
+        while((ch = fgetc(input)) != EOF)
             frequencies[ch]++;
     }else{
         return -1;
     }
 
-    fclose(fp);
+    fclose(input);
     return 1;
 }    
 
@@ -31,9 +29,9 @@ node* createNode(const unsigned char ch, const int frequency){
     return NULL;
 }
 
-node* buildHuffmanTree(int frequencies[256]){
-    minHeap* minHeap = createMinHeap(256);
-    for(int i = 0; i<256; i++){
+node* buildHuffmanTree(int frequencies[MAX_TREE_HEIGHT]){
+    minHeap* minHeap = createMinHeap(MAX_TREE_HEIGHT);
+    for(int i = 0; i<MAX_TREE_HEIGHT; i++){
         if(frequencies[i] > 0){
             node* newNode = createNode(i, frequencies[i]);
             insertMinHeap(minHeap, newNode);
@@ -65,4 +63,8 @@ void generateCodes(node* root, char* const tmpCode, int top, char codes[256][MAX
         tmpCode[top] = '1';
         generateCodes(root->right, tmpCode, top+1, codes);
     }
+}
+
+void writeHeader(int frequencies[MAX_TREE_HEIGHT], FILE* output){
+
 }
