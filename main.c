@@ -18,17 +18,24 @@ int main(int argc, char* argv[]){
             printf("Problema con l'apertura del file, chiusura in corso...");
             return -1;
         }
-        FILE* output = fopen("Compression.txt", "wb");
+        FILE* output = fopen("Compression.bin", "wb");
         if(output == NULL){
             printf("Problema con la compressione del file, chiusura in corso...");
             fclose(input);
             return -1;
         }
 
-
-
-        //CODICE COMPRESSIONE HUFFMAN
-
+        // Inizializzo l'array per contare le frequenze di un carattere
+        int freqs[MAX_TREE_HEIGHT] = {0};
+        countChar(input, freqs);
+        node* root = buildHuffmanTree(freqs);
+        char codes[256][MAX_TREE_HEIGHT] = {0};
+        char tmpCode[256] = {0};
+        generateCodes(root, tmpCode, 0, codes);
+        writeHeader(freqs, output);
+        rewind(input);
+        compressData(input, output, codes);
+        
         
         // Salvo l'esito di entrambe le chiusure
         int esito_in = fclose(input);

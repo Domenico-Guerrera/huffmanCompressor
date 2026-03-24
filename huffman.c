@@ -4,17 +4,11 @@
 #include "huffman.h"
 #include "minheap.h"
 
-int countChar(FILE* input, int frequencies[MAX_TREE_HEIGHT]){
-    if(input != NULL){
-        int ch;
-        while((ch = fgetc(input)) != EOF)
-            frequencies[ch]++;
-    }else{
-        return -1;
-    }
+void countChar(FILE* input, int frequencies[MAX_TREE_HEIGHT]){
+    int ch;
+    while((ch = fgetc(input)) != EOF)
+        frequencies[ch]++;
 
-    fclose(input);
-    return 1;
 }    
 
 node* createNode(const unsigned char ch, const int frequency){
@@ -45,7 +39,11 @@ node* buildHuffmanTree(int frequencies[MAX_TREE_HEIGHT]){
         newFather->right= minR;
         insertMinHeap(minHeap, newFather);
     }
-    return extractMin(minHeap);
+
+    node* root = extractMin(minHeap);
+    free(minHeap->array);
+    free(minHeap);
+    return root;
 }
 
 void generateCodes(node* root, char* const tmpCode, int top, char codes[256][MAX_TREE_HEIGHT]){
@@ -69,15 +67,29 @@ void writeHeader(int frequencies[MAX_TREE_HEIGHT], FILE* output){
     fwrite(frequencies, sizeof(int), MAX_TREE_HEIGHT, output);
 }
 
-void compressData(FILE* input, FILE* output, char codes[256][MAX_TREE_HEIGHT]) {
+void compressData(FILE* input, FILE* output, char codes[256][MAX_TREE_HEIGHT]){
     unsigned char buffer = 0;       // Il nostro secchio da 8 bit (tutto a zero)
     int bitCount = 0;               // Quanti bit abbiamo infilato nel secchio
     int ch;                         // Variabile per leggere i caratteri dal file originale
 
     while((ch = fgetc(input)) != EOF){
         char* strCode = codes[ch];
-        for(bitCount; bitCount < 8; bitCount++){
-            
+        for(int i = 0; strCode[i] != '\0'; i++){
+            buffer <<= 1;
+            if(strCode[i] == '1'){
+                buffer |= 1;
+            }
+            ++bitCount;
+            if(bitCount == 8){
+                fputc(buffer, output);
+                buffer = 0;
+                bitCount = 0;
+            }
         }
+    }
+
+    if(bitCount > 0){
+        buffer <<= 8-bitCount;
+        fputc(buffer, output);
     }
 }
