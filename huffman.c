@@ -66,5 +66,18 @@ void generateCodes(node* root, char* const tmpCode, int top, char codes[256][MAX
 }
 
 void writeHeader(int frequencies[MAX_TREE_HEIGHT], FILE* output){
+    fwrite(frequencies, sizeof(int), MAX_TREE_HEIGHT, output);
+}
 
+void compressData(FILE* input, FILE* output, char codes[256][MAX_TREE_HEIGHT]) {
+    unsigned char buffer = 0;       // Il nostro secchio da 8 bit (tutto a zero)
+    int bitCount = 0;               // Quanti bit abbiamo infilato nel secchio
+    int ch;                         // Variabile per leggere i caratteri dal file originale
+
+    while((ch = fgetc(input)) != EOF){
+        char* strCode = codes[ch];
+        for(bitCount; bitCount < 8; bitCount++){
+            
+        }
+    }
 }

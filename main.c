@@ -12,20 +12,24 @@ int main(int argc, char* argv[]){
     int success = 0;
 
     while(success == 0){
+        // Apertura del file da comprimere e del file compresso
         FILE* input = fopen(argv[1], "rb");
         if(input == NULL){
             printf("Problema con l'apertura del file, chiusura in corso...");
             return -1;
         }
-        FILE* output = fopen("Compression.txt", "w");
+        FILE* output = fopen("Compression.txt", "wb");
         if(output == NULL){
             printf("Problema con la compressione del file, chiusura in corso...");
             fclose(input);
             return -1;
         }
 
+
+
         //CODICE COMPRESSIONE HUFFMAN
 
+        
         // Salvo l'esito di entrambe le chiusure
         int esito_in = fclose(input);
         int esito_out = fclose(output);
@@ -34,8 +38,7 @@ int main(int argc, char* argv[]){
         if(esito_in == 0 && esito_out == 0){
             success = 1; // Tutto perfetto, impostiamo la flag per uscire dal while
             printf("Compressione completata con successo!\n");
-        } else {
-            // Almeno una delle due chiusure ha fallito
+        } else {    // Almeno una delle due chiusure ha fallito 
             int ans = 0;
             do{
                 printf("C'è stato un problema durante il salvataggio o la chiusura dei file.\n"
