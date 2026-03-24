@@ -68,6 +68,7 @@ void writeHeader(int frequencies[MAX_TREE_HEIGHT], FILE* output){
 }
 
 void compressData(FILE* input, FILE* output, char codes[256][MAX_TREE_HEIGHT]){
+
     unsigned char buffer = 0;       // Il nostro secchio da 8 bit (tutto a zero)
     int bitCount = 0;               // Quanti bit abbiamo infilato nel secchio
     int ch;                         // Variabile per leggere i caratteri dal file originale
@@ -91,5 +92,42 @@ void compressData(FILE* input, FILE* output, char codes[256][MAX_TREE_HEIGHT]){
     if(bitCount > 0){
         buffer <<= 8-bitCount;
         fputc(buffer, output);
+    }
+}
+
+void readHeader(int* const frequencies, FILE* input){
+    fread(frequencies, sizeof(int), MAX_TREE_HEIGHT, input);
+}
+
+int getTotalChars(int* const frequencies){
+    int sum = 0;
+    for(int i = 0; i < 256; i++)
+        // Non controlliamo gli 0, dato che non altererebbe la somma
+        sum += frequencies[i];
+    return sum;
+}
+
+void decompressData(FILE* input, FILE* output, node* root, int totalCh){
+    node* current = root;
+    int decodedCh = 0;
+    int ch = 0;
+
+    while(decodedCh < totalCh && (ch = fgetc(input)) != EOF){
+        for(int i = 0; i < 8; i++){
+            if((ch & 0x80) == 0x80){
+                current = current->right;
+            }else{
+                current = current->left;
+            }
+            ch<<=1;
+            if(current->left == NULL && current->right == NULL){
+                fputc(current->character, output);
+                ++decodedCh;
+                current = root;
+                if(decodedCh == totalCh)
+                    break;
+            }
+        }
+
     }
 }

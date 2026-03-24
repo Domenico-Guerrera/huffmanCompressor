@@ -15,5 +15,8 @@ node* buildHuffmanTree(int frequencies[MAX_TREE_HEIGHT]);
 void generateCodes(node* root, char* const tmpCode, int top, char codes[256][MAX_TREE_HEIGHT]);
 void writeHeader(int frequencies[MAX_TREE_HEIGHT], FILE* output);
 void compressData(FILE* input, FILE* output, char codes[256][MAX_TREE_HEIGHT]);
+void readHeader(int* const frequencies, FILE* input);
+int getTotalChars(int* const frequencies);
+void decompressData(FILE* input, FILE* output, node* root, int totalCh);
 
 #endif
