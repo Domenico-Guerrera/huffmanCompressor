@@ -9,7 +9,7 @@ typedef struct minHeap {
     node **array;               // Array di puntatori a node (nota il doppio asterisco **)
 } minHeap;
 
-minHeap* createMinHeap(int cacca);           // Crea ed inizializza la struttura MinHeap, un albero in cui la radice è sempre minore dei suoi figli
+minHeap* createMinHeap(int capacity);           // Crea ed inizializza la struttura MinHeap, un albero in cui la radice è sempre minore dei suoi figli
 void swapNodes(node **a, node **b);             // Funzione di scambio dei nodi
 void minHeapify(minHeap *minHeap, int idx);
 node* extractMin(minHeap *minHeap);
